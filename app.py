@@ -2,13 +2,15 @@ import openai
 import pandas as pd
 from openai.embeddings_utils import get_embedding,cosine_similarity
 import openai
+import os
 import pandas as pd
 from openai.embeddings_utils import get_embedding,cosine_similarity
-
+from flask_ngrok import run_with_ngrok
 from flask import Flask, request,make_response,jsonify
+# from pyngrok import ngrok
 # from chatbot import makeRequest
 
-api_key ="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"
+api_key ="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"
 openai.api_key = api_key
 
 def makeRequest(input_string):
@@ -252,13 +254,33 @@ def makeRequest(input_string):
     )
     return completion.choices[0].message['content']
 
-app = Flask(__name__)
+# app = Flask(__name__)
 
-@app.route('/api/v1/chatgpt', methods=['POST'])
+# @app.route('/api/v1/chatgpt', methods=['POST'])
+# def create_todo():
+#    data = request.get_json()
+#    result = makeRequest(data['message'])
+#    return make_response(jsonify({"chatgpt": result}), 200)
+
+# if __name__ == '__main__':
+#     app.run()
+application = Flask(__name__)
+# app.secret_key = '33d5f499c564155e5d2795f5b6f8c5f6'
+# run_with_ngrok(application)
+
+# url = ngrok.connect(5000).public_url
+# print('Henzy Tunnel URL:', url)
+
+@application.route('/api/v1/chatgpt', methods=['POST'])
 def create_todo():
    data = request.get_json()
    result = makeRequest(data['message'])
    return make_response(jsonify({"chatgpt": result}), 200)
 
+@application.route('/api/v1/', methods=['GET'])
+def get_todo():
+   return make_response(jsonify({"chatgpt":"Ok"}), 200)
+
 if __name__ == '__main__':
-    app.run()
+    application.debug = False
+    application.run()
